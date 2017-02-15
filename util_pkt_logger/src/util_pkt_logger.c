@@ -82,7 +82,10 @@ void usage (void);
  * may fail occasionally. However, using the Mac as a platform is not for
  * production but for testing only. */
 
-#ifdef __MACH__
+#ifdef __MACH__ 
+#include <AvailabilityMacros.h>
+
+#ifndef MAC_OS_X_VERSION_10_12 
 #define CLOCK_REALTIME 0
 #define CLOCK_MONOTONIC 0
 #include <sys/time.h>
@@ -96,6 +99,11 @@ static int clock_gettime(int clk_id, struct timespec* t) {
     t->tv_nsec = now.tv_usec * 1000;
     return 0;
 }
+#endif
+
+#ifdef MAC_OS_X_VERSION_10_12 
+#include <sys/time.h>
+#endif
 
 static int clock_nanosleep(
 		clock_t __attribute__((__unused__)) clock_id,
@@ -104,8 +112,8 @@ static int clock_nanosleep(
 		struct timespec *remain) {
 	return nanosleep(request,remain);
 }
-#endif
 
+#endif
 
 /* -------------------------------------------------------------------------- */
 /* --- PRIVATE FUNCTIONS DEFINITION ----------------------------------------- */

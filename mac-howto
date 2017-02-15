@@ -19,11 +19,13 @@ $ sudo port install ftdi1
 $ git clone https://github.com/devttys0/libmpsse
 
 The minimum change you need to make is add #include <stdlib.h> to the support.c file.
-Then:
+Then (in src directory):
 $ ./configure --disable-python
 
 Now, in case you get some errors (most likely) try this:
 ./configure LDFLAGS=-L/opt/local/lib CFLAGS="-I/opt/local/include -I/opt/local/include/libftdi1" --disable-python
+
+If needed In Makefile.in change the lines with "install -D ..." to "install ..."
 
 Then (as long as no errors occur)
 $ make
@@ -42,6 +44,11 @@ $ make mac
 
 4) Remove the ancient apple ftdi driver (this step is needed at least after each reboot)
 $ sudo kextunload /System/Library/Extensions/FTDIUSBSerialDriver.kext
+or perhaps 
+$ sudo kextunload -b com.apple.driver.AppleUSBFTDI
+Note: I dunno if this all works with USB-C, Apple changed the driver model in
+Sierra considerably and libmpsse is very old, inspect what is running with: 
+$ kextstat
 
 5) Now you can try to contact the concentrator (connect it!)
 $ cd lora_gateway/libloragw
